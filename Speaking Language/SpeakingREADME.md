@@ -80,10 +80,6 @@ Operators in Speaking serve the same purpose as Java's operators, but with diffe
 |/|divided by|
 |%|modulus|
 
-### Comparators
-
-### Collections
-
 
 ### Misc.
 More functions will be introduced over time when necessary.
