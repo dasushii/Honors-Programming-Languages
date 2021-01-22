@@ -69,10 +69,11 @@ Although functions can only return one element at a time, they can have multiple
 
 Example:
 ```
-My function testFunction accepts (integer inputInteger) and distributes (integers){
-    I'll end with inputInteger times 2.
+My function testFunction accepts (nothing) and distributes (numbers and Words){
+    I'll end with 5 times 5.
 } 
 ```
+In the above example, Speaking automatically detects that the return type is a `number` and returns a `number`.
 
 
 ### Control Flow
@@ -115,7 +116,7 @@ Operators in Speaking serve the same purpose as Java's operators, but with diffe
 |--| `decrease` or `decreased`|
 
 
-Note that *Speaking does not have Java equivalents of `+=`, `-=', and etc*
+Note that *Speaking does not have Java equivalents of `+=`, `-=`, and etc*
 
 #### Operations between different variable types
 
@@ -147,7 +148,7 @@ The table below lists some additional useful functions. More functions will be i
 |-----|-----|
 |`announce`| Equivalent to Java's `System.out.print`|
 |`announce loudly`|Equivalent to Java's `System.out.println`|
-|`cut my word`|Equivalent to Java's `String.substring()`|
+|`cut my word [Word] from [lower index] to [upper index]`|Equivalent to Java's `String.substring()`|
 |`word length of (Word)`|Equivalent to Java's `String.length()`|
 |`convert()`|Takes in Java code and turns returns it in Speaking language|
 |`I want to have fun`|Returns link https://www.boredbutton.com/|
