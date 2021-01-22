@@ -27,6 +27,8 @@ alright?
 ### Variables
 Speaking supports integers, doubles, booleans, and Strings, but they are called "numbers", "decimals", "facts", and "Words", respectively.
 
+"numbers", "decimals", "facts", and "Words" can be singular or plural, depending on which fits the context. Both work.
+
 When declaring variables, use "The" + [variable type] + [variable name]. To set the variable, simply use "is" + [definition]
 
 
@@ -42,54 +44,110 @@ To call a variable, simply use the variable name:
 `announce testVariable.`
 
 ### Functions
-In general, functions follow the form "My function" + [function name] + "accepts" + ([function parameter(s)]) + "and distributes" + [return type(s)] + "."
+In general, functions follow the form "My function" + [function name] + "accepts" + ([function parameter(s)]) + "and distributes" + [return type(s)]
+
+To `return`, simply type `I'll end with`
 
 Example:
 ```
-My function testFunction accepts (integer)
+My function testFunction accepts (number inputInteger) and distributes (numbers){
+    I'll end with inputInteger times 2.
+} 
+```
+#### Functions with no return type
+For functions that don't return anything (Java's `void`), use `nothing`.
+Similarly, for functions that don't require any input, also use `nothing`
+Example:
+```
+My function testFunction2 accepts (nothing) and distributes (nothing){
+    announce "This function doesn't return anything!".
+} 
 ```
 
+#### Functions with multiple return types
 Although functions can only return one element at a time, they can have multiple return types (**subject to change if not possible**)
 
+Example:
+```
+My function testFunction accepts (integer inputInteger) and distributes (integers){
+    I'll end with inputInteger times 2.
+} 
+```
 
 
 ### Control Flow
 The Speaking Language mainly uses 2 loops: `while` and`until`.
 `while` works like the while loop in Java, and `until` runs until the conditions are met.
 
-Use [loop type] + ([conditions]).
+Use [loop type] + [conditions].
 
-Example: 
+Example of while loop: 
 ```
-number x is 2.
-while(x is 2){
+number x is 5.
+while x is greater than 2 {
     announce x.
+    x is x minus 1.
 }
 ```
+The console would print `543`
+
+Example of until loop:
+```
+number x is 5.
+until x is equal to 2 {
+    announce x.
+    x is x minus 1.
+}
+```
+The console would print `543`
+
 ### Operators
 Operators in Speaking serve the same purpose as Java's operators, but with different names:
-|Java Operator|Speaking Operator|
-|--|--|
-|>|is greater than|
-|<|is less than|
-|>=|is greater than or equal to|
-|<=|is less than or equal to|
-|+|plus|
-|-|minus|
-|*|times|
-|/|divided by|
-|%|modulus|
+
+| Java Operator | Speaking Operator |
+|------|------|
+|`+`|`plus`|
+|`-`|`minus`|
+|`*`|`times`|
+|`/`|`divided by`|
+|`%`|`modulus`|
+|++|`increase` or `increased`|
+|--| `decrease` or `decreased`|
 
 
-### Misc.
-More functions will be introduced over time when necessary.
+Note that *Speaking does not have Java equivalents of `+=`, `-=', and etc*
 
-### Important Table
-Finally, below is a table of all current keywords and operators in Speaking:
+#### Operations between different variable types
 
-| Keyword/Operator | Description |
-|------|-----|
-|  |  |
-| | |
-| | |
-| | |
+This will be further explored later on.
+
+### Comparators
+Comparators in Speaking are also closely similar to Java comparators:
+
+| Java Operator | Speaking Operator |
+|------|------|
+|`>`|`is greater than`|
+|`<`|`is less than`|
+|`==`|`is equal to`|
+|`>=`|`is greater than or equal to`|
+|`<=`|`is less than or equal to`|
+|`!>`|`is not greater than`|
+|`!<`|`is not less than`|
+|`!>=`|`is not greater than or equal to`|
+|`!<=`|`is not less than or equal to`|
+|`!=`|`Is not equal to`|
+
+### Collections
+Speaking Language mainly uses ArrayLists as the way to store elements
+
+### Built-in functions
+The table below lists some additional useful functions. More functions will be introduced over time when necessary.
+
+| Function | Description |
+|-----|-----|
+|`announce`| Equivalent to Java's `System.out.print`|
+|`announce loudly`|Equivalent to Java's `System.out.println`|
+|`cut my word`|Equivalent to Java's `String.substring()`|
+|`word length of (Word)`|Equivalent to Java's `String.length()`|
+|`convert()`|Takes in Java code and turns returns it in Speaking language|
+|`I want to have fun`|Returns link https://www.boredbutton.com/|
