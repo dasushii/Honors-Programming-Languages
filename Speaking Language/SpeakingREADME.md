@@ -54,6 +54,7 @@ My function testFunction accepts (number inputInteger) and distributes (numbers)
     I'll end with inputInteger times 2.
 } 
 ```
+The console would return `inputInteger * 2`
 #### Functions with no return type
 For functions that don't return anything (Java's `void`), use `nothing`.
 Similarly, for functions that don't require any input, also use `nothing`
@@ -63,6 +64,7 @@ My function testFunction2 accepts (nothing) and distributes (nothing){
     announce "This function doesn't return anything!".
 } 
 ```
+The console would print `This function doesn't return anything!`
 
 #### Functions with multiple return types
 Although functions can only return one element at a time, they can have multiple return types (**subject to change if not possible**)
@@ -75,6 +77,7 @@ My function testFunction accepts (nothing) and distributes (numbers and Words){
 ```
 In the above example, Speaking automatically detects that the return type is a `number` and returns a `number`.
 
+The console would return `25`
 
 ### Control Flow
 The Speaking Language mainly uses 2 loops: `while` and`until`.
