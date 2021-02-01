@@ -1,0 +1,7 @@
+; Eric Wang, repository link:
+program ::= statementList?
+
+statementList ::= statement statementList*
+
+statement ::= expression
+            |
