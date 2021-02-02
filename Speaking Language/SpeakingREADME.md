@@ -25,7 +25,9 @@ This is another way to comment.
 alright?
 ```
 ### Variables
-Speaking supports integers, doubles, booleans, and Strings, but they are called "numbers", "decimals", "facts", and "Words", respectively.
+Speaking supports integers, doubles, booleans, and Strings, but they are called "numbers", "decimals", "facts", and "Words", respectively.\
+
+When using "facts" (booleans), "true" and "false" are replaced with "yep" and "nope"
 
 "numbers", "decimals", "facts", and "Words" can be singular or plural, depending on which fits the context. Both work.
 
@@ -42,6 +44,7 @@ The Word testVariable2 is "Hello".
 To call a variable, simply use the variable name:
 
 `announce testVariable.`
+
 
 ### Functions
 In general, functions follow the form "My function" + [function name] + "accepts" + ([function parameter(s)]) + "and distributes" + [return type(s)]
@@ -139,7 +142,7 @@ Comparators in Speaking are also closely similar to Java comparators:
 |`!<`|`is not less than`|
 |`!>=`|`is not greater than or equal to`|
 |`!<=`|`is not less than or equal to`|
-|`!=`|`Is not equal to`|
+|`!=`|`is not equal to`|
 
 ### Collections
 Speaking Language mainly uses ArrayLists as the way to store elements

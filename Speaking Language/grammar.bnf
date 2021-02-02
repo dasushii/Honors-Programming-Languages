@@ -1,7 +1,110 @@
-; Eric Wang, repository link:
+; Eric Wang, repository link: https://github.com/dasushii/Honors-Programming-Languages/
+
 program ::= statementList?
 
-statementList ::= statement statementList*
+statementList ::= statement statementList* "."
 
 statement ::= expression
-            |
+            | declaration
+            | comment
+            | conditional
+            | loop
+            | collection
+
+expression ::= primary
+            | unary
+            | binary
+            | functionCall
+            | "nothing"
+
+primary ::= literal
+          | IDENTIFIER
+
+unary ::= "increase" | "increased"
+        | "decrese" | "decreased"
+
+binary ::= number binaryOperator number
+
+binaryOperator ::= mathOperator
+                 | comparator
+
+mathOperator ::= "plus"
+               | "minus"
+               | "times"
+               | "divided by"
+
+comparator ::= "is greater than"
+             | "is less than"
+             | "is equal to"
+             | "is greater than or equal to"
+             | "is less than or equal to"
+             | "is not greater than"
+             | "is not less than
+             | "is not greater than or equal to"
+             | "is not less than or equal to"
+             | "is not equal to"
+
+functionCall ::= IDENTIFIER
+               | "announce"
+               | "announce loudly"
+               | "cut my word" Word "from" number "to" number
+               | "word length of" Word
+               | "convert"
+               | "I want to have fun"
+
+literal ::= Word | Words
+          | number | numbers
+          | fact | facts
+          | decimal | decimals
+
+declaration ::= variableDeclaration
+               | functionDeclaration
+
+variableDeclaration ::= "My" variable variableName
+                      | "My" variable variableName "is" IDENTIFIER
+                      | variableName "is" IDENTIFIER
+
+variableName ::= STRING
+
+functionDeclaration ::= "My function" STRING "accepts" inputList "and distributes" outputList statementList "I'll end with" expression
+
+inputList ::= "nothing"
+            | variable
+            | variable "and" inputList
+outputList ::= "nothing"
+             | variable
+             | variable "and" outputList
+
+variable ::= Word | Words
+            | number | numbers
+            | fact | facts
+            | decimal | decimals
+
+
+Word ::= STRING
+Words ::= STRING
+
+number ::= INTEGER
+numbers ::= INTEGER
+
+fact ::= BOOLEAN
+facts ::= BOOLEAN
+
+decimal ::= DOUBLE
+decimals ::= DOUBLE
+
+comment ::= "psst," STRING* "alright?"
+
+conditional ::= "if" expression "{" statementList "}"
+
+loop ::= whileLoop
+        | untilLoop
+
+whileLoop ::= "while" expression "{" statementList "}"
+
+untilLoop :== "until" expression "{" statementList "}"
+
+collection ::= ARRAYLIST
+
+
+
