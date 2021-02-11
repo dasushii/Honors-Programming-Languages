@@ -39,7 +39,7 @@ comparator ::= "is greater than"
              | "is greater than or equal to"
              | "is less than or equal to"
              | "is not greater than"
-             | "is not less than
+             | "is not less than"
              | "is not greater than or equal to"
              | "is not less than or equal to"
              | "is not equal to"
