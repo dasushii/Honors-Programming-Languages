@@ -2,7 +2,7 @@
     (println "Author: Eric Wang ericwang@westminster.net")
     )
 ; Exercise 1.2
-(/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7)))
+(inspect (/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7))))
 ; Because integers are rounded down, this expression should evaluate to 0, which is exactly what the terminal returns
 
 ; Exercise 1.3
