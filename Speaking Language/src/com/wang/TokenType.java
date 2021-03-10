@@ -19,7 +19,7 @@ public enum TokenType {
     BOOLEAN_TYPE,
 
     VARIABLE_NAME,
-    
+
     INTEGER,
     STRING,
     REAL,

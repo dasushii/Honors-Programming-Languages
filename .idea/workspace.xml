@@ -2,16 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32f123c7-e462-4442-8b32-177d2eb2a94d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Speaking Language/Speaking Language.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexeme.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Speaking.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/TokenType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Speaking Language/testInput/scratch.speak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SICP/section1Exercises.scm" beforeDir="false" afterPath="$PROJECT_DIR$/SICP/section1Exercises.scm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexeme.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexeme.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Speaking.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Speaking.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/TokenType.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/TokenType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/testInput/scratch.speak" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/testInput/scratch.speak" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +55,19 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Undefined Language" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Speaking" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="com.wang.Speaking" />
+      <module name="Speaking Language" />
+      <option name="PROGRAM_PARAMETERS" value="$PROJECT_DIR$/Speaking Language/testInput/scratch.speak" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Speaking Language" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
