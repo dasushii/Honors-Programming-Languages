@@ -40,4 +40,9 @@ public class Speaking {
             System.out.println(lexeme);
         }
     }
+
+    public static void error(int lineNumber, String message) {
+        System.err.println(message);
+        System.exit(65);
+    }
 }

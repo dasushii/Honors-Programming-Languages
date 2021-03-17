@@ -8,7 +8,7 @@ The speaking language is primarily designed to more resemble normal speaking com
 ## The Basics
 
 ### General Syntax
-Similar to the semicolon `;` used in Java, Speaking uses the period `.`
+Similar to the semicolon `;` used in Java, Speaking uses the bang `!`
 Braces `{ }` used in Java will also be used in Speaking.
 
 Additionally, "and" will be used instead of commas to separate elements.
@@ -36,35 +36,35 @@ When declaring variables, use "The" + [variable type] + [variable name]. To set 
 
 Example:
 ```
-the Word testVariable.
-testVariable is "Hello".
+the Word testVariable!
+testVariable is "Hello"!
 
-The Word testVariable2 is "Hello".
+the Word testVariable2 is "Hello"!
 ```
 To call a variable, simply use the variable name:
 
-`announce testVariable.`
+`announce testVariable!`
 
 
 ### Functions
 In general, functions follow the form "My function" + [function name] + "accepts" + ([function parameter(s)]) + "and distributes" + [return type(s)]
 
-To `return`, simply type `I'll end with`
+To `return`, simply type `show`
 
 Example:
 ```
 My function testFunction accepts (number inputInteger) and distributes (numbers){
-    I'll end with inputInteger times 2.
+    show inputInteger times 2!
 } 
 ```
 The console would return `inputInteger * 2`
 #### Functions with no return type
 For functions that don't return anything (Java's `void`), use `nothing`.
-Similarly, for functions that don't require any input, also use `nothing`
+Similarly, for functions that don't require any input, also use `nothing`.
 Example:
 ```
 My function testFunction2 accepts (nothing) and distributes (nothing){
-    announce "This function doesn't return anything!".
+    announce "This function doesn't return anything!"!
 } 
 ```
 The console would print `This function doesn't return anything!`
@@ -75,7 +75,7 @@ Although functions can only return one element at a time, they can have multiple
 Example:
 ```
 My function testFunction accepts (nothing) and distributes (numbers and Words){
-    I'll end with 5 times 5.
+    show 5 times 5!
 } 
 ```
 In the above example, Speaking automatically detects that the return type is a `number` and returns a `number`.
@@ -90,20 +90,20 @@ Use [loop type] + [conditions].
 
 Example of while loop: 
 ```
-number x is 5.
+number x is 5!
 while x is greater than 2 {
-    announce x.
-    x is x minus 1.
+    announce x!
+    x is x minus 1!
 }
 ```
 The console would print `543`
 
 Example of until loop:
 ```
-number x is 5.
+number x is 5!
 until x is equal to 2 {
-    announce x.
-    x is x minus 1.
+    announce x!
+    x is x minus 1!
 }
 ```
 The console would print `543`

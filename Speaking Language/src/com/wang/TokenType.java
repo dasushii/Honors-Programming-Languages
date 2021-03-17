@@ -6,47 +6,67 @@ public enum TokenType {
     CLOSE_BRACE,
     OPEN_PAREN,
     CLOSE_PAREN,
-    PERIOD,
+    OPEN_A_BRACKET,
+    CLOSE_A_BRACKET,
+    OPEN_S_BRACKET,
+    CLOSE_S_BRACKET,
+    BANG,
+
+    //Multi-character tokens
     PLUS,
     MINUS,
     TIMES,
     DIVIDE,
 
-    //Varying length tokens
-    INTEGER_TYPE,
-    STRING_TYPE,
-    REAL_TYPE,
-    BOOLEAN_TYPE,
+    THE,
 
-    VARIABLE_NAME,
+    ACCEPTS,
+    DISTRIBUTES,
+
+    RETURN,
+
+    IDENTIFIER,
 
     INTEGER,
+    INTEGER_TYPE,
     STRING,
-    REAL,
-    BOOLEAN,
+    STRING_TYPE,
+    DOUBLE,
+    DOUBLE_TYPE,
+    BOOLEAN_TYPE,
+    TRUE,
+    FALSE,
+
     NULL,
 
-    MY_FUNCTION,
+    ARRAY_LIST,
+
+    MY,
+    FUNCTION,
     IS,
     AND,
     OR,
-
 
     WHILE,
     UNTIL,
 
     NOT,
-    EQUAL_TO,
-    LESS_THAN,
-    GREATER_THAN,
+    EQUAL,
+    LESS,
+    GREATER,
+    TO,
+    THAN,
 
     COMMENT,
 
     //keywords
     ANNOUNCE,
-    ANNOUNCE_LOUDLY,
-    CUT_WORD,
-    WORD_LENGTH,
+    LOUDLY,
+    CUT,
+    LENGTH,
     CONVERT,
     FUN,
+
+    //End of File
+    EOF,
 }
