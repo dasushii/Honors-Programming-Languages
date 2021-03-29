@@ -6,24 +6,23 @@ public enum TokenType {
     CLOSE_BRACE,
     OPEN_PAREN,
     CLOSE_PAREN,
-    OPEN_A_BRACKET,
-    CLOSE_A_BRACKET,
-    OPEN_S_BRACKET,
-    CLOSE_S_BRACKET,
+    OPEN_BRACKET,
+    CLOSE_BRACKET,
     BANG,
 
     //Multi-character tokens
     PLUS,
     MINUS,
     TIMES,
-    DIVIDE,
+    OVER,
 
-    THE,
+    INCREASE,
+    DECREASE,
 
     ACCEPTS,
     DISTRIBUTES,
 
-    RETURN,
+    SHOW,
 
     IDENTIFIER,
 
@@ -39,7 +38,9 @@ public enum TokenType {
 
     NULL,
 
-    ARRAY_LIST,
+    ARRAY,
+    WITH,
+    ADD,
 
     MY,
     FUNCTION,
@@ -49,6 +50,8 @@ public enum TokenType {
 
     WHILE,
     UNTIL,
+
+    IF,
 
     NOT,
     EQUAL,
@@ -66,6 +69,7 @@ public enum TokenType {
     LENGTH,
     CONVERT,
     FUN,
+    OF,
 
     //End of File
     EOF,

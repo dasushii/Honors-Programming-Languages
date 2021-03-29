@@ -1,4 +1,4 @@
-{} () <> [] !
+{} () [] !
 plus minus times over
 the
 accepts
@@ -11,7 +11,7 @@ Word x is "blah blah"
 decimal x is 451829.412789
 fact x is yep nope
 nothing
-arraylist
+array
 my function is and or
 while until
 not equal to

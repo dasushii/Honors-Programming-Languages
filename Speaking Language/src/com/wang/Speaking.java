@@ -42,7 +42,23 @@ public class Speaking {
     }
 
     public static void error(int lineNumber, String message) {
-        System.err.println(message);
-        System.exit(65);
+        report(lineNumber, "", message);
+    }
+    public static void error(Lexeme lexeme, String message){
+        if(lexeme.getType()== TokenType.EOF){
+            report(lexeme.getLineNumber(),"at end of file", message);
+        }
+        else{
+            report(lexeme.getLineNumber(), "at '" + lexeme + "'", message);
+        }
+    }
+    public static void report(int lineNumber, String where, String message){
+        System.err.println("[line " + lineNumber + "] Error " + where + ": " + message);
+    }
+    public static void runSource(String sourceCode){
+        Lexer lexer = new Lexer(sourceCode);
+        ArrayList<Lexeme> lexemes = lexer.lex();
+        Recognizer recognizer = new Recognizer(lexemes);
+        recognizer.program();
     }
 }

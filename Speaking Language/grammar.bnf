@@ -1,29 +1,34 @@
-; Eric Wang, repository link: https://github.com/dasushii/Honors-Programming-Languages/
+// Eric Wang, repository link: https://github.com/dasushii/Honors-Programming-Languages/
 
 program ::= statementList?
 
-statementList ::= statement statementList* "."
+statementList ::= statement "!" statementList*
 
 statement ::= expression
             | declaration
-            | comment
-            | conditional
+            | assignment
             | loop
-            | collection
+            | conditional
+            | block
 
 expression ::= primary
             | unary
             | binary
             | functionCall
+            | arrayCall
             | "nothing"
 
 primary ::= literal
           | IDENTIFIER
+          | grouping
 
-unary ::= "increase" | "increased"
-        | "decrese" | "decreased"
+grouping ::= "(" expression ")"
 
-binary ::= number binaryOperator number
+unary ::= "increase"
+        | "decrese"
+        | "not"
+
+binary ::= expression binaryOperator expression
 
 binaryOperator ::= mathOperator
                  | comparator
@@ -44,67 +49,65 @@ comparator ::= "is greater than"
              | "is not less than or equal to"
              | "is not equal to"
 
-functionCall ::= IDENTIFIER
+functionCall ::= IDENTIFIER "(" parameterList? ")"
                | "announce"
                | "announce loudly"
-               | "cut my word" Word "from" number "to" number
-               | "word length of" Word
+               | "cut my word" IDENTIFIER "from" INTEGER "to" INTEGER
+               | "word length of" IDENTIFIER
                | "convert"
-               | "I want to have fun"
+               | "fun"
 
-literal ::= Word | Words
-          | number | numbers
-          | fact | facts
-          | decimal | decimals
+parameterList ::= expression
+                | expression "and" parameterList
+
+literal ::= INTEGER
+          | STRING
+          | BOOLEAN
+          | DOUBLE
 
 declaration ::= variableDeclaration
                | functionDeclaration
+               | arrayDeclaration
 
-variableDeclaration ::= "My" variable variableName
-                      | "My" variable variableName "is" IDENTIFIER
-                      | variableName "is" IDENTIFIER
+assignment ::= variableAssignment
+            | arrayAssignment
 
-variableName ::= STRING
+variableAssignment ::= IDENTIFIER "is" expression
 
-functionDeclaration ::= "My function" STRING "accepts" inputList "and distributes" outputList statementList "I'll end with" expression
+arrayDeclaration ::= "My array" IDENTIFIER "is size" INTEGER "with" variableType
+                   | "My array" IDENTIFIER "is size" INTEGER "with" variableType "[" expression "]"
 
-inputList ::= "nothing"
-            | variable
-            | variable "and" inputList
-outputList ::= "nothing"
-             | variable
-             | variable "and" outputList
+variableDeclaration ::= "My" variableType IDENTIFIER
+                      | "My" variableType IDENTIFIER  "is" expression
 
-variable ::= Word | Words
-            | number | numbers
-            | fact | facts
-            | decimal | decimals
+functionDeclaration ::= "My function" IDENTIFIER "accepts" "(" typeList? ")" "and distributes" "(" typeList? ")" block
 
+typeList ::= variableType
+            | variableType "and" typeList
 
-Word ::= STRING
-Words ::= STRING
+variableType ::= "Word" | "Words"
+            | "number" | "numbers"
+            | "fact" | "facts"
+            | "decimal" | "decimals"
 
-number ::= INTEGER
-numbers ::= INTEGER
+arrayAssignment ::= IDENTIFIER "add" "(" expression ")"
 
-fact ::= BOOLEAN
-facts ::= BOOLEAN
-
-decimal ::= DOUBLE
-decimals ::= DOUBLE
+arrayCall ::= IDENTIFIER "[" expression "]"
 
 comment ::= "psst," STRING* "alright?"
 
-conditional ::= "if" expression "{" statementList "}"
+conditional ::= "if" "(" expression ")" block
 
 loop ::= whileLoop
         | untilLoop
 
-whileLoop ::= "while" expression "{" statementList "}"
+whileLoop ::= "while" "(" expression ")" block
 
-untilLoop :== "until" expression "{" statementList "}"
+untilLoop ::= "until" "(" expression ")" block
 
-collection ::= ARRAYLIST
+block ::= "{" statement* optionalReturn? statement* "}"
+
+optionalReturn ::= "show" expression
 
 
 

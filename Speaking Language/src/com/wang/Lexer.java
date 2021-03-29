@@ -18,11 +18,11 @@ public class Lexer {
 
     static{
         keywords = new HashMap<>();
-        keywords.put("the", THE);
         keywords.put("announce", ANNOUNCE);
         keywords.put("loudly", LOUDLY);
         keywords.put("cut", CUT);
         keywords.put("length", LENGTH);
+        keywords.put("of", OF);
         keywords.put("convert", CONVERT);
         keywords.put("Word", STRING_TYPE);
         keywords.put("Words", STRING_TYPE);
@@ -37,7 +37,9 @@ public class Lexer {
         keywords.put("plus", PLUS);
         keywords.put("minus", MINUS);
         keywords.put("times", TIMES);
-        keywords.put("over", DIVIDE);
+        keywords.put("over", OVER);
+        keywords.put("increase", INCREASE);
+        keywords.put("decrease", DECREASE);
         keywords.put("is", IS);
         keywords.put("while", WHILE);
         keywords.put("until", UNTIL);
@@ -54,8 +56,10 @@ public class Lexer {
         keywords.put("greater", GREATER);
         keywords.put("than", THAN);
         keywords.put("to", TO);
-        keywords.put("show", RETURN);
-        keywords.put("arraylist", ARRAY_LIST);
+        keywords.put("show", SHOW);
+        keywords.put("array", ARRAY);
+        keywords.put("with", WITH);
+        keywords.put("add", ADD);
     }
     public Lexer(String source){
         this.source = source;
@@ -122,13 +126,9 @@ public class Lexer {
             case '}':
                 return new Lexeme(CLOSE_BRACE, lineNumber);
             case '[':
-                return new Lexeme(OPEN_S_BRACKET, lineNumber);
+                return new Lexeme(OPEN_BRACKET, lineNumber);
             case ']':
-                return new Lexeme(CLOSE_S_BRACKET, lineNumber);
-            case '<':
-                return new Lexeme(OPEN_A_BRACKET, lineNumber);
-            case '>':
-                return new Lexeme(CLOSE_A_BRACKET, lineNumber);
+                return new Lexeme(CLOSE_BRACKET, lineNumber);
             //Strings
             case '\"':
                 return lexString();

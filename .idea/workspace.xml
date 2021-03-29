@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32f123c7-e462-4442-8b32-177d2eb2a94d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Recognizer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Speaking Language/SpeakingREADME.md" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/SpeakingREADME.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexeme.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexeme.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/grammar.bnf" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/grammar.bnf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Speaking.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Speaking.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/TokenType.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/TokenType.java" afterDir="false" />
@@ -21,8 +21,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
