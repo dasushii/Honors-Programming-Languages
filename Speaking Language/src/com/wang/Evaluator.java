@@ -8,6 +8,21 @@ public class Evaluator {
                 return eval(tree.getLeft(), environment);
             case STATEMENT_LIST:
                 return evalStatementList(tree, environment);
+            case INTEGER:
+            case DOUBLE:
+            case STRING:
+            case TRUE:
+            case FALSE:
+                return tree;
+            case PLUS:
+            case MINUS:
+            case TIMES:
+            case OVER:
+            case :
+            case :
+            case :
+            case :
+            case :
         }
     }
 

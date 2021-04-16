@@ -38,11 +38,15 @@ public class Speaking {
         ArrayList<Lexeme> lexemes = lexer.lex();
         Parser parser = new Parser(lexemes);
         //printLexemes(lexemes);
-        Lexeme.printTree(parser.program());
+        Lexeme programParseTree = parser.program();
+        //Lexeme.printTree(parser.program());
 
-        Environment globalEnvironment = Environment(null);
+        Environment globalEnvironment = new Environment(null);
         Evaluator evaluator = new Evaluator();
         Lexeme programResult = evaluator.eval(programParseTree, globalEnvironment);
+
+        System.out.println("Program result: " + programResult);
+        //Environment.
     }
 
     public static void printLexemes(ArrayList<Lexeme> lexemes) {
