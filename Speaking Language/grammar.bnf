@@ -2,14 +2,15 @@
 
 program ::= statementList?
 
-statementList ::= statement "!" statementList*
+statementList ::= statement statementList*
 
 statement ::= expression
             | declaration
-            | assignment
+            | assignment "!"
             | loop
             | conditional
             | block
+            | optionalReturn
 
 expression ::= primary
             | unary
@@ -20,15 +21,12 @@ expression ::= primary
 
 primary ::= literal
           | IDENTIFIER
-          | grouping
-
-grouping ::= "(" expression ")"
 
 unary ::= "increase"
         | "decrese"
         | "not"
 
-binary ::= expression binaryOperator expression
+binary ::= primary binaryOperator primary
 
 binaryOperator ::= mathOperator
                  | comparator
@@ -36,25 +34,20 @@ binaryOperator ::= mathOperator
 mathOperator ::= "plus"
                | "minus"
                | "times"
-               | "divided by"
+               | "over"
 
 comparator ::= "is greater than"
              | "is less than"
              | "is equal to"
-             | "is greater than or equal to"
-             | "is less than or equal to"
-             | "is not greater than"
-             | "is not less than"
-             | "is not greater than or equal to"
-             | "is not less than or equal to"
-             | "is not equal to"
+             | "and"
+             | "or"
 
 functionCall ::= IDENTIFIER "(" parameterList? ")"
-               | "announce"
-               | "announce loudly"
-               | "cut my word" IDENTIFIER "from" INTEGER "to" INTEGER
-               | "word length of" IDENTIFIER
-               | "convert"
+               | "announce" expression
+               | "announce loudly" expression
+               | "cut" "(" IDENTIFIER "and" INTEGER "to" INTEGER ")"
+               | "length" IDENTIFIER
+               | "convert" "(" STRING ")"
                | "fun"
 
 parameterList ::= expression
@@ -65,36 +58,35 @@ literal ::= INTEGER
           | BOOLEAN
           | DOUBLE
 
-declaration ::= variableDeclaration
+declaration ::= variableDeclaration "!"
                | functionDeclaration
-               | arrayDeclaration
+               | arrayDeclaration "!"
 
 assignment ::= variableAssignment
             | arrayAssignment
 
-variableAssignment ::= IDENTIFIER "is" expression
+variableAssignment ::= IDENTIFIER "has" expression
 
-arrayDeclaration ::= "My array" IDENTIFIER "is size" INTEGER "with" variableType
-                   | "My array" IDENTIFIER "is size" INTEGER "with" variableType "[" expression "]"
+arrayDeclaration ::= "my array" IDENTIFIER "is size" INTEGER "with" variableType
 
-variableDeclaration ::= "My" variableType IDENTIFIER
-                      | "My" variableType IDENTIFIER  "is" expression
+variableDeclaration ::= "my" variableType IDENTIFIER
+                      | "my" variableType IDENTIFIER  "has" expression
 
-functionDeclaration ::= "My function" IDENTIFIER "accepts" "(" typeList? ")" "and distributes" "(" typeList? ")" block
+functionDeclaration ::= "my function" IDENTIFIER "accepts" "(" typeList? ")" "and distributes" "(" typeList? ")" block
 
 typeList ::= variableType
             | variableType "and" typeList
 
-variableType ::= "Word" | "Words"
+variableType ::= "word" | "words"
             | "number" | "numbers"
             | "fact" | "facts"
             | "decimal" | "decimals"
 
-arrayAssignment ::= IDENTIFIER "add" "(" expression ")"
+arrayAssignment ::= IDENTIFIER "add" expression "[" INTEGER "]"
 
 arrayCall ::= IDENTIFIER "[" expression "]"
 
-comment ::= "psst," STRING* "alright?"
+comment ::= "psst," STRING "alright?"
 
 conditional ::= "if" "(" expression ")" block
 
@@ -105,9 +97,9 @@ whileLoop ::= "while" "(" expression ")" block
 
 untilLoop ::= "until" "(" expression ")" block
 
-block ::= "{" statement* optionalReturn? statement* "}"
+block ::= "{" statementList? "}"
 
-optionalReturn ::= "show" expression
-
+optionalReturn ::= "show" expression "!"
+                | "show" "!"
 
 

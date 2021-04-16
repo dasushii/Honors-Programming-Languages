@@ -1,26 +1,12 @@
-{} () [] !
-plus minus times over
-the
-accepts
-distributes
-show
-thisIsARandomIdentifier
-number x is 531252
-Word x is "blah blah"
-"This is a String :D"
-decimal x is 451829.412789
-fact x is yep nope
-nothing
-array
-my function is and or
-while until
-not equal to
-greater than
-less than
-announce()
-announce loudly()
-cut my Word()
-Word length()
-convert()
-fun()
+hello is equal to hi
 
+until(test1 is greater than 10){test1 has increase!}
+
+my fact testBoolean has true!
+if (testBoolean) { testBoolean has false! }
+
+my function testFunction accepts (nothing) and distributes (nothing) {show nothing!}
+my array testArray is size 4 with words!
+testArray add "random string" [0]!
+testArray[0]
+length x
