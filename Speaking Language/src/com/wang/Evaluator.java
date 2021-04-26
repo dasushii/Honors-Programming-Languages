@@ -420,6 +420,11 @@ public class Evaluator {
             if (left.getType() == INTEGER) {
                 switch (right.getType()) {
                     case INTEGER:
+                        if (left.getIntValue() >) {
+
+                        } else {
+
+                        }
                     case DOUBLE:
                     case STRING:
                     case TRUE:
