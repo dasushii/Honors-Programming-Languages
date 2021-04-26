@@ -2,8 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32f123c7-e462-4442-8b32-177d2eb2a94d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Speaking Language/testInput/plus.speak" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/grammar.bnf" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/grammar.bnf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Environment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Evaluator.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Evaluator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexeme.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexeme.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Parser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Speaking.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Speaking.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +59,7 @@
       <recent name="$PROJECT_DIR$/Undefined Language" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.EnvironmentTester">
+  <component name="RunManager" selected="Application.Speaking">
     <configuration name="EnvironmentTester" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.wang.EnvironmentTester" />
       <module name="Speaking Language" />
@@ -72,12 +78,16 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="com.wang.Speaking" />
       <module name="Speaking Language" />
-      <option name="PROGRAM_PARAMETERS" value="./testInput/scratch.speak" />
+      <option name="PROGRAM_PARAMETERS" value="./testInput/plus.speak" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Speaking Language" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Application.Speaking" />
+      <item itemvalue="Application.EnvironmentTester" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.EnvironmentTester" />

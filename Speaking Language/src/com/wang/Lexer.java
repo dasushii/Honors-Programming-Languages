@@ -49,8 +49,6 @@ public class Lexer {
         keywords.put("accepts", ACCEPTS);
         keywords.put("distributes", DISTRIBUTES);
         keywords.put("and", AND);
-        keywords.put("or", OR);
-        keywords.put("not", NOT);
         keywords.put("nothing", NULL);
         keywords.put("equal", EQUAL);
         keywords.put("less", LESS);
@@ -175,7 +173,8 @@ public class Lexer {
 
     private Lexeme lexString() {
         while (peek() != '"' && currentPosition < source.length()) advance();
-        String text = source.substring(startOfCurrentLexeme, currentPosition) + '"';
+        String text = source.substring(startOfCurrentLexeme, currentPosition);
+        text = text.substring(1);
         currentPosition++;
         return new Lexeme(STRING, text, lineNumber);
     }

@@ -54,7 +54,7 @@ public class Lexeme {
     public String toString() {
         String result = "";
         result += this.type + " ";
-        if (this.stringValue != null) result += this.stringValue + " ";
+        if (this.stringValue != null) result += '"' + this.stringValue + '"' + " ";
         else if (this.doubleValue != null) result += this.doubleValue + " ";
         else if (this.intValue != null) result += this.intValue + " ";
         result += "(line: " + this.lineNumber + ")";
@@ -75,6 +75,18 @@ public class Lexeme {
 
     public Lexeme getRight() {
         return this.right;
+    }
+
+    public String getStringValue() {
+        return this.stringValue;
+    }
+
+    public int getIntValue() {
+        return this.intValue;
+    }
+
+    public double getDoubleValue() {
+        return this.doubleValue;
     }
 
     public boolean equals(Lexeme other) {

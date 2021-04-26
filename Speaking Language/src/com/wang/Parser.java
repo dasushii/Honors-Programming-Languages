@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import static com.wang.TokenType.*;
 
 public class Parser {
-    private static final boolean debug = true;
+    private static final boolean debug = false;
     //instance variables
     private final ArrayList<Lexeme> lexemes;
     private int nextLexemeIndex = 0;
@@ -63,6 +63,7 @@ public class Parser {
         if (statementListPending()) {
             Lexeme statementList2 = statementList();
             statementList.setRight(statementList2);
+            System.out.println(statementList.getRight());
         }
         return statementList;
     }
@@ -90,6 +91,7 @@ public class Parser {
         else if (unaryPending()) return unary();
         else if (functionCallPending()) return functionCall();
         else if (arrayCallPending()) return arrayCall();
+        else if (binaryOperationPending()) return binaryOperation();
         else if (primaryPending()) return primary();
         else {
             Speaking.error(currentLexeme, "Expected " + "expression" + " but found " + currentLexeme);
@@ -158,17 +160,10 @@ public class Parser {
         if (debug) System.out.println("-- primary --");
         Lexeme primary = new Lexeme(PRIMARY, currentLexeme.getLineNumber());
         if (literalPending()) {
-            Lexeme literal = literal();
-            primary.setLeft(literal);
-            if (binaryOperationPending()) {
-                primary.setRight(binaryOperation());
-            }
+            return literal();
         } else if (check(IDENTIFIER)) {
             Lexeme id = consume(IDENTIFIER);
-            primary.setLeft(id);
-            if (binaryOperationPending()) {
-                primary.setRight(binaryOperation());
-            }
+            return id;
         } else {
             Speaking.error(currentLexeme, "Expected " + "primary" + " but found " + currentLexeme);
         }
@@ -437,16 +432,19 @@ public class Parser {
     private Lexeme binaryOperation() {
         if (debug) System.out.println("-- binaryOperator --");
         Lexeme binaryOperation = new Lexeme(BINARY_OPERATION, currentLexeme.getLineNumber());
+        Lexeme primary1 = primary();
         if (mathOperatorPending()) {
             Lexeme mathOperator = mathOperator();
-            Lexeme primary = primary();
-            binaryOperation.setLeft(mathOperator);
-            binaryOperation.setRight(primary);
+            mathOperator.setLeft(primary1);
+            Lexeme primary2 = primary();
+            mathOperator.setRight(primary2);
+            return mathOperator;
         } else if (comparatorPending()) {
             Lexeme comparator = comparator();
-            Lexeme primary = primary();
-            binaryOperation.setLeft(comparator);
-            binaryOperation.setRight(primary);
+            comparator.setLeft(primary1);
+            Lexeme primary2 = primary();
+            comparator.setRight(primary2);
+            return comparator;
         } else {
             Speaking.error(currentLexeme, "Expected " + "binaryOperator" + " but found " + currentLexeme);
         }
@@ -520,36 +518,20 @@ public class Parser {
         if (debug) System.out.println("-- comparator --");
         Lexeme comparator = new Lexeme(COMPARATOR, currentLexeme.getLineNumber());
         if (check(IS)) {
-            Lexeme is = consume(IS);
-            comparator.setLeft(is);
+            consume(IS);
             if (check(GREATER)) {
                 Lexeme greater = consume(GREATER);
-                Lexeme than = consume(THAN);
-                Lexeme glue = new Lexeme(GLUE, currentLexeme.getLineNumber());
-                glue.setLeft(greater);
-                glue.setRight(than);
-                comparator.setRight(glue);
+                consume(THAN);
+                return greater;
             } else if (check(LESS)) {
                 Lexeme less = consume(LESS);
-                Lexeme than = consume(THAN);
-                Lexeme glue = new Lexeme(GLUE, currentLexeme.getLineNumber());
-                glue.setLeft(less);
-                glue.setRight(than);
-                comparator.setRight(glue);
+                consume(THAN);
+                return less;
             } else if (check(EQUAL)) {
                 Lexeme equal = consume(EQUAL);
-                Lexeme to = consume(TO);
-                Lexeme glue = new Lexeme(GLUE, currentLexeme.getLineNumber());
-                glue.setLeft(equal);
-                glue.setRight(to);
-                comparator.setRight(glue);
+                consume(TO);
+                return equal;
             }
-        } else if (check(AND)) {
-            Lexeme and = consume(AND);
-            comparator.setLeft(and);
-        } else if (check(OR)) {
-            Lexeme or = consume(OR);
-            comparator.setLeft(or);
         } else {
             Speaking.error(currentLexeme, "Expected " + "comparator" + " but found " + currentLexeme);
         }
@@ -598,7 +580,19 @@ public class Parser {
     }
 
     private boolean binaryOperationPending() {
-        return binaryOperatorPending();
+        return binaryOperatorNextPending();
+    }
+
+    private boolean binaryOperatorNextPending() {
+        return mathOperatorNextPending() || comparatorNextPending();
+    }
+
+    private boolean mathOperatorNextPending() {
+        return checkNext(PLUS) || checkNext(MINUS) || checkNext(TIMES) || checkNext(OVER);
+    }
+
+    private boolean comparatorNextPending() {
+        return checkNext(IS) || checkNext(AND) || checkNext(OR);
     }
 
     private boolean functionCallPending() {
@@ -642,7 +636,7 @@ public class Parser {
     }
 
     private boolean comparatorPending() {
-        return check(IS) || check(AND) || check(OR);
+        return check(IS);
     }
 
     private boolean variableDeclarationPending() {

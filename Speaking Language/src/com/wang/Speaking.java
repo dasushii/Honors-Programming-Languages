@@ -46,7 +46,6 @@ public class Speaking {
         Lexeme programResult = evaluator.eval(programParseTree, globalEnvironment);
 
         System.out.println("Program result: " + programResult);
-        //Environment.
     }
 
     public static void printLexemes(ArrayList<Lexeme> lexemes) {

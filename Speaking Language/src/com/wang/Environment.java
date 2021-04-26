@@ -15,7 +15,7 @@ public class Environment {
         this.identifiers = new ArrayList<>();
         this.values = new ArrayList<>();
         this.hashCode();
-        
+
     }
 
     //public environment methods
@@ -58,7 +58,7 @@ public class Environment {
     //toString
     public String toString() {
         String result = "";
-        result += "Environment " + this.hashCode();
+        result += "Environment " + this.hashCode() + "\n" + "Parent ID: " + parent;
         for (int i = 0; i < identifiers.size(); i++) {
             result += "\n";
             result += identifiers.get(i).toString() + ": ";

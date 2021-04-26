@@ -39,8 +39,6 @@ mathOperator ::= "plus"
 comparator ::= "is greater than"
              | "is less than"
              | "is equal to"
-             | "and"
-             | "or"
 
 functionCall ::= IDENTIFIER "(" parameterList? ")"
                | "announce" expression
