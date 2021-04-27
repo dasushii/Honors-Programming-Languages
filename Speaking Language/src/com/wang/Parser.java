@@ -90,7 +90,6 @@ public class Parser {
         if (check(NULL)) return consume(NULL);
         else if (unaryPending()) return unary();
         else if (functionCallPending()) return functionCall();
-        else if (arrayCallPending()) return arrayCall();
         else if (binaryOperationPending()) return binaryOperation();
         else if (primaryPending()) return primary();
         else {
@@ -102,8 +101,7 @@ public class Parser {
     private Lexeme declaration() {
         if (debug) System.out.println("-- declaration --");
         Lexeme declaration = new Lexeme(DECLARATION, currentLexeme.getLineNumber());
-        if (arrayDeclarationPending()) return arrayDeclaration();
-        else if (functionDeclarationPending()) return functionDeclaration();
+        if (functionDeclarationPending()) return functionDeclaration();
         else if (variableDeclarationPending()) return variableDeclaration();
         else {
             Speaking.error(currentLexeme, "Expected " + "declaration" + " but found " + currentLexeme);
@@ -115,7 +113,6 @@ public class Parser {
         if (debug) System.out.println("-- assignment --");
         Lexeme assignment = new Lexeme(ASSIGNMENT, currentLexeme.getLineNumber());
         if (variableAssignmentPending()) return variableAssignment();
-        else if (arrayAssignmentPending()) return arrayAssignment();
         else {
             Speaking.error(currentLexeme, "Expected " + "assignment" + " but found " + currentLexeme);
         }
@@ -175,12 +172,18 @@ public class Parser {
         Lexeme unary = new Lexeme(UNARY, currentLexeme.getLineNumber());
         if (check(INCREASE)) {
             Lexeme increase = consume(INCREASE);
+            Lexeme integer = consume(INTEGER);
+            increase.setLeft(integer);
             return increase;
         } else if (check(DECREASE)) {
             Lexeme decrease = consume(DECREASE);
+            Lexeme integer = consume(INTEGER);
+            decrease.setLeft(integer);
             return decrease;
         } else if (check(NOT)) {
             Lexeme not = consume(NOT);
+            Lexeme expression = expression();
+            not.setLeft(expression);
             return not;
         } else {
             Speaking.error(currentLexeme, "Expected " + "unary" + " but found " + currentLexeme);
@@ -206,90 +209,59 @@ public class Parser {
                 functionCall.setRight(parameterList());
             }
             consume(CLOSE_PAREN);
+            consume(BANG);
         } else if (check(ANNOUNCE)) {
             Lexeme announce = consume(ANNOUNCE);
-            functionCall.setLeft(announce);
             if (check(LOUDLY)) {
                 Lexeme loudly = consume(LOUDLY);
-                Lexeme glue = new Lexeme(GLUE, currentLexeme.getLineNumber());
-                glue.setLeft(loudly);
-                glue.setRight(expression());
-                functionCall.setRight(glue);
-            } else {
-                functionCall.setRight(expression());
+                announce.setLeft(loudly);
             }
+            Lexeme string = consume(STRING);
+            announce.setRight(string);
+            consume(BANG);
+            return announce;
         } else if (check(CUT)) {
             Lexeme cut = consume(CUT);
-            functionCall.setLeft(cut);
-            consume(OPEN_PAREN);
-            Lexeme id = consume(IDENTIFIER);
-            Lexeme and = consume(AND);
-            Lexeme integer1 = consume(INTEGER);
-            Lexeme to = consume(TO);
-            Lexeme integer2 = consume(INTEGER);
-            Lexeme glue1 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-            Lexeme glue2 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-            Lexeme glue3 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-            Lexeme glue4 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-            glue1.setLeft(id);
-            glue1.setRight(glue2);
-            glue2.setLeft(and);
-            glue2.setRight(glue3);
-            glue3.setLeft(integer1);
-            glue3.setRight(glue4);
-            glue4.setLeft(to);
-            glue4.setRight(integer2);
-            functionCall.setRight(glue1);
-            consume(CLOSE_PAREN);
-        } else if (check(LENGTH)) {
-            Lexeme length = consume(LENGTH);
-            Lexeme id = consume(IDENTIFIER);
-            functionCall.setLeft(length);
-            functionCall.setRight(id);
-        } else if (check(CONVERT)) {
-            Lexeme convert = consume(CONVERT);
             consume(OPEN_PAREN);
             Lexeme string = consume(STRING);
+            consume(AND);
+            Lexeme integer1 = consume(INTEGER);
+            consume(TO);
+            Lexeme integer2 = consume(INTEGER);
+            Lexeme glue = new Lexeme(GLUE, currentLexeme.getLineNumber());
+            glue.setLeft(integer1);
+            glue.setRight(integer2);
+            cut.setLeft(string);
+            cut.setRight(glue);
             consume(CLOSE_PAREN);
-            functionCall.setLeft(convert);
-            functionCall.setRight(string);
+            consume(BANG);
+            return cut;
+        } else if (check(LENGTH)) {
+            Lexeme length = consume(LENGTH);
+            Lexeme string = consume(STRING);
+            length.setLeft(string);
+            consume(BANG);
+            return length;
         } else if (check(FUN)) {
             Lexeme fun = consume(FUN);
-            functionCall.setLeft(fun);
+            consume(BANG);
+            return fun;
         } else {
             Speaking.error(currentLexeme, "Expected " + "functionCall" + " but found " + currentLexeme);
         }
         return functionCall;
     }
 
-    private Lexeme arrayCall() {
-        if (debug) System.out.println("-- arrayCall --");
-        Lexeme arrayCall = new Lexeme(ARRAY_CALL, currentLexeme.getLineNumber());
-        Lexeme id = consume(IDENTIFIER);
-        arrayCall.setLeft(id);
-        consume(OPEN_BRACKET);
-        arrayCall.setRight(expression());
-        consume(CLOSE_BRACKET);
-        return arrayCall;
-    }
-
     private Lexeme variableDeclaration() {
         if (debug) System.out.println("-- variableDeclaration --");
-        Lexeme my = consume(MY);
+        consume(MY);
         Lexeme variableType = variableType();
-        variableType.setLeft(my);
         Lexeme id = consume(IDENTIFIER);
+        variableType.setLeft(id);
         if (check(HAS)) {
-            Lexeme has = consume(HAS);
+            consume(HAS);
             Lexeme expression = expression();
-            Lexeme glue1 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-            Lexeme glue2 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-            glue1.setLeft(id);
-            glue1.setRight(glue2);
-            glue2.setLeft(has);
-            glue2.setRight(expression);
-        } else {
-            variableType.setRight(id);
+            variableType.setRight(expression);
         }
         consume(BANG);
         return variableType;
@@ -297,70 +269,20 @@ public class Parser {
 
     private Lexeme functionDeclaration() {
         if (debug) System.out.println("-- functionDeclaration --");
-        Lexeme my = consume(MY);
+        consume(MY);
         Lexeme function = consume(FUNCTION);
         Lexeme id = consume(IDENTIFIER);
-        Lexeme accepts = consume(ACCEPTS);
+        consume(ACCEPTS);
         consume(OPEN_PAREN);
-        Lexeme typeList1 = typeList();
-        consume(CLOSE_PAREN);
-        Lexeme and = consume(AND);
-        Lexeme distributes = consume(DISTRIBUTES);
-        consume(OPEN_PAREN);
-        Lexeme typeList2 = typeList();
+        Lexeme typeList = typeList();
         consume(CLOSE_PAREN);
         Lexeme block = block();
-        Lexeme glue1 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        Lexeme glue2 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        Lexeme glue3 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        Lexeme glue4 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        Lexeme glue5 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        Lexeme glue6 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        function.setLeft(my);
-        glue1.setLeft(id);
-        glue1.setRight(glue2);
-        glue2.setLeft(accepts);
-        glue2.setRight(glue3);
-        glue3.setLeft(typeList1);
-        glue3.setRight(glue4);
-        glue4.setLeft(and);
-        glue4.setRight(glue5);
-        glue5.setLeft(distributes);
-        glue5.setRight(glue6);
-        glue6.setLeft(typeList2);
-        glue6.setRight(block);
-        function.setRight(glue1);
+        Lexeme closure = new Lexeme(CLOSURE, currentLexeme.getLineNumber());
+        closure.setLeft(typeList);
+        closure.setRight(block);
+        function.setLeft(id);
+        function.setRight(closure);
         return function;
-    }
-
-    private Lexeme arrayDeclaration() {
-        if (debug) System.out.println("-- arrayDeclaration --");
-        Lexeme my = consume(MY);
-        Lexeme array = consume(ARRAY);
-        Lexeme id = consume(IDENTIFIER);
-        Lexeme is = consume(IS);
-        Lexeme size = consume(SIZE);
-        Lexeme integer = consume(INTEGER);
-        Lexeme with = consume(WITH);
-        Lexeme variableType = variableType();
-        Lexeme glue1 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        Lexeme glue2 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        Lexeme glue3 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        Lexeme glue4 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        Lexeme glue5 = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        array.setLeft(my);
-        glue1.setLeft(id);
-        glue1.setRight(glue2);
-        glue2.setLeft(is);
-        glue2.setRight(glue3);
-        glue3.setLeft(size);
-        glue3.setRight(glue4);
-        glue4.setLeft(integer);
-        glue4.setRight(glue5);
-        glue5.setLeft(with);
-        glue5.setRight(variableType);
-        consume(BANG);
-        return array;
     }
 
     private Lexeme variableAssignment() {
@@ -372,23 +294,6 @@ public class Parser {
         has.setRight(expression);
         consume(BANG);
         return has;
-    }
-
-    private Lexeme arrayAssignment() {
-        if (debug) System.out.println("-- arrayAssignment --");
-        Lexeme id = consume(IDENTIFIER);
-        Lexeme add = consume(ADD);
-        Lexeme expression = expression();
-        consume(OPEN_BRACKET);
-        Lexeme integer = consume(INTEGER);
-        consume(CLOSE_BRACKET);
-        consume(BANG);
-        add.setLeft(id);
-        Lexeme glue = new Lexeme(GLUE, currentLexeme.getLineNumber());
-        glue.setLeft(expression);
-        glue.setRight(integer);
-        add.setRight(glue);
-        return add;
     }
 
     private Lexeme whileLoop() {
@@ -464,11 +369,9 @@ public class Parser {
         Lexeme parameterList = new Lexeme(PARAMETER_LIST, currentLexeme.getLineNumber());
         parameterList.setLeft(expression());
         if (check(AND)) {
-            Lexeme and = consume(AND);
-            Lexeme glue = new Lexeme(GLUE, currentLexeme.getLineNumber());
-            glue.setLeft(and);
-            glue.setRight(parameterList());
-            parameterList.setRight(glue);
+            consume(AND);
+            Lexeme parameterList2 = parameterList();
+            parameterList.setRight(parameterList2);
         }
         return parameterList;
     }
@@ -490,13 +393,14 @@ public class Parser {
     private Lexeme typeList() {
         if (debug) System.out.println("-- typeList --");
         Lexeme typeList = new Lexeme(TYPE_LIST, currentLexeme.getLineNumber());
-        typeList.setLeft(variableType());
+        Lexeme variableType = variableType();
+        Lexeme id = consume(IDENTIFIER);
+        variableType.setLeft(id);
+        typeList.setLeft(variableType);
         if (check(AND)) {
-            Lexeme and = consume(AND);
-            Lexeme glue = new Lexeme(GLUE, currentLexeme.getLineNumber());
-            glue.setLeft(and);
-            glue.setRight(typeList());
-            typeList.setRight(glue);
+            consume(AND);
+            Lexeme typeList2 = typeList();
+            typeList.setRight(typeList2);
         }
         return typeList;
     }
@@ -548,15 +452,15 @@ public class Parser {
     }
 
     private boolean expressionPending() {
-        return primaryPending() || unaryPending() || binaryOperationPending() || functionCallPending() || arrayCallPending() || check(NULL);
+        return primaryPending() || unaryPending() || binaryOperationPending() || functionCallPending() || check(NULL);
     }
 
     private boolean declarationPending() {
-        return variableDeclarationPending() || functionDeclarationPending() || arrayDeclarationPending();
+        return variableDeclarationPending() || functionDeclarationPending();
     }
 
     private boolean assignmentPending() {
-        return variableAssignmentPending() || arrayAssignmentPending();
+        return variableAssignmentPending();
     }
 
     private boolean loopPending() {
@@ -599,24 +503,12 @@ public class Parser {
         return (check(IDENTIFIER) && checkNext(OPEN_PAREN)) || check(ANNOUNCE) || check(CUT) || check(LENGTH) || check(FUN);
     }
 
-    private boolean arrayCallPending() {
-        return check(IDENTIFIER) && checkNext(OPEN_BRACKET);
-    }
-
     private boolean functionDeclarationPending() {
         return check(MY) && checkNext(FUNCTION);
     }
 
-    private boolean arrayDeclarationPending() {
-        return check(MY) && checkNext(ARRAY);
-    }
-
     private boolean variableAssignmentPending() {
         return check(IDENTIFIER) && checkNext(HAS);
-    }
-
-    private boolean arrayAssignmentPending() {
-        return check(IDENTIFIER) && checkNext(ADD);
     }
 
     private boolean whileLoopPending() {

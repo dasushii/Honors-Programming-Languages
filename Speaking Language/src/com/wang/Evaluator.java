@@ -1,5 +1,7 @@
 package com.wang;
 
+import java.util.ArrayList;
+
 import static com.wang.TokenType.*;
 
 public class Evaluator {
@@ -9,13 +11,14 @@ public class Evaluator {
         switch (tree.getType()) {
             case PROGRAM:
             case STATEMENT_LIST:
-                return eval(tree.getLeft(), environment);
+                return evalStatementList(tree.getLeft(), environment);
             case INTEGER:
             case DOUBLE:
             case STRING:
             case TRUE:
             case FALSE:
-                return tree;
+            case IDENTIFIER:
+                return evalPossibleVariableCall(tree, environment);
             case EQUAL:
             case LESS:
             case GREATER:
@@ -25,14 +28,8 @@ public class Evaluator {
             case TIMES:
             case OVER:
                 return evalSimpleOperator(tree, environment);
-            case IDENTIFIER:
-                return
             case FUNCTION:
-                return evalFunctionDeclaration();
-            case ARRAY:
-                return evalArrayDeclaration();
-            case ADD:
-                return evalArrayAssignment();
+                return evalFunctionDefinition(tree, environment);
             case STRING_TYPE:
             case INTEGER_TYPE:
             case DOUBLE_TYPE:
@@ -41,38 +38,27 @@ public class Evaluator {
             case HAS:
                 return evalVariableAssignment(tree, environment);
             case FUNCTION_CALL:
-                return evalFunctionCall();
+                return evalFunctionCall(tree, environment);
             case WHILE:
-                return evalWhileLoop();
+                return evalWhileLoop(tree, environment);
             case UNTIL:
-                return evalUntilLoop();
-            case ARRAY_CALL:
-                return evalArrayCall();
+                return evalUntilLoop(tree, environment);
             case SHOW:
-                return evalReturn();
+                return evalReturn(tree, environment);
             case IF:
-                return evalConditional();
+                return evalConditional(tree, environment);
             default:
                 return null;
         }
     }
 
-    private Lexeme evalStatementList(Lexeme statementList, Environment environment) {
-        switch (statementList.getType()) {
-            case INTEGER:
-            case DOUBLE:
-            case STRING:
-            case TRUE:
-            case FALSE:
-                return statementList;
-            case PLUS:
-            case MINUS:
-            case TIMES:
-            case OVER:
-                return evalSimpleOperator(statementList, environment);
-            case IDENTIFIER:
+    private Lexeme evalStatementList(Lexeme tree, Environment environment) {
+        if (tree.getRight() != null) {
+            eval(tree.getLeft(), environment);
+            return evalStatementList(tree.getRight(), environment);
+        } else {
+            return eval(tree.getLeft(), environment);
         }
-        return null;
     }
 
     private Lexeme evalSimpleOperator(Lexeme tree, Environment environment) {
@@ -397,19 +383,51 @@ public class Evaluator {
     }
 
     private Lexeme evalIncrease(Lexeme tree, Environment environment) {
-        return null;
+        if (tree.getLeft().getType() == INTEGER) {
+            return new Lexeme(INTEGER, tree.getLeft().getIntValue() + 1, tree.getLineNumber());
+        } else {
+            Speaking.error(tree, "Cannot increase type " + tree.getLeft());
+            return null;
+        }
     }
 
     private Lexeme evalDecrease(Lexeme tree, Environment environment) {
+        if (tree.getLeft().getType() == INTEGER) {
+            return new Lexeme(INTEGER, tree.getLeft().getIntValue() - 1, tree.getLineNumber());
+        } else {
+            Speaking.error(tree, "Cannot decrease type " + tree.getLeft());
+            return null;
+        }
+    }
+
+    private Lexeme evalVariableDeclaration(Lexeme variableType, Environment environment) {
+        Lexeme id = variableType.getLeft();
+        if (environment.identifiers.contains(id)) {
+            Speaking.error(id, "Variable identifier " + id + " already in use. Please choose a different name");
+            return null;
+        }
+        if (variableType.getRight() != null) {
+            environment.insert(id, variableType.getRight());
+        } else {
+            environment.insert(id, null);
+        }
         return null;
     }
 
-    private Lexeme evalVariableDeclaration(Lexeme lexeme, Environment environment) {
-
-    }
-
-    private Lexeme evalVariableAssignment(Lexeme lexeme, Environment environment) {
-
+    private Lexeme evalVariableAssignment(Lexeme has, Environment environment) {
+        Lexeme id = has.getLeft();
+        Lexeme expression = has.getRight();
+        boolean replaced = false;
+        for (int i = 0; i < environment.identifiers.size(); i++) {
+            if (environment.identifiers.get(i) == id) {
+                environment.identifiers.set(i, expression);
+                replaced = true;
+            }
+        }
+        if (!replaced) {
+            Speaking.error(id, "Variable " + id + " is not properly initialized");
+        }
+        return null;
     }
 
     private Lexeme evalComparator(Lexeme comparator, Environment environment) {
@@ -420,35 +438,105 @@ public class Evaluator {
             if (left.getType() == INTEGER) {
                 switch (right.getType()) {
                     case INTEGER:
-                        if (left.getIntValue() >) {
-
+                        if (left.getIntValue() > right.getIntValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
                         } else {
-
+                            return new Lexeme(FALSE, left.getLineNumber());
                         }
                     case DOUBLE:
+                        if (left.getIntValue() > right.getDoubleValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case STRING:
+                        if (left.getIntValue() > right.getStringValue().length()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case TRUE:
+                        if (left.getIntValue() > 4) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case FALSE:
+                        if (left.getIntValue() > 5) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     default:
                         Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
                 }
             } else if (left.getType() == DOUBLE) {
                 switch (right.getType()) {
                     case INTEGER:
+                        if (left.getDoubleValue() > right.getIntValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case DOUBLE:
+                        if (left.getDoubleValue() > right.getDoubleValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case STRING:
+                        if (left.getDoubleValue() > right.getStringValue().length()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case TRUE:
+                        if (left.getDoubleValue() > 4.0) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case FALSE:
+                        if (left.getIntValue() > 5.0) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     default:
                         Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
                 }
             } else if (left.getType() == STRING) {
                 switch (right.getType()) {
                     case INTEGER:
+                        if (left.getStringValue().length() > right.getIntValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case DOUBLE:
+                        if (left.getStringValue().length() > right.getDoubleValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case STRING:
+                        if (left.getStringValue().length() > right.getStringValue().length()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case TRUE:
+                        if (left.getStringValue().length() > 4) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     case FALSE:
+                        if (left.getStringValue().length() > 5) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
                     default:
                         Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
                 }
@@ -456,45 +544,364 @@ public class Evaluator {
                 Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
             }
         } else if (comparator.getType() == LESS) {
-        } else {
-            //comparator type will be EQUAL
-            return new Lexeme();
+            if (left.getType() == INTEGER) {
+                switch (right.getType()) {
+                    case INTEGER:
+                        if (left.getIntValue() < right.getIntValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case DOUBLE:
+                        if (left.getIntValue() < right.getDoubleValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case STRING:
+                        if (left.getIntValue() < right.getStringValue().length()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case TRUE:
+                        if (left.getIntValue() < 4) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case FALSE:
+                        if (left.getIntValue() < 5) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    default:
+                        Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
+                        return null;
+                }
+            } else if (left.getType() == DOUBLE) {
+                switch (right.getType()) {
+                    case INTEGER:
+                        if (left.getDoubleValue() < right.getIntValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case DOUBLE:
+                        if (left.getDoubleValue() < right.getDoubleValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case STRING:
+                        if (left.getDoubleValue() < right.getStringValue().length()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case TRUE:
+                        if (left.getDoubleValue() < 4.0) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case FALSE:
+                        if (left.getIntValue() < 5.0) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    default:
+                        Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
+                        return null;
+                }
+            } else if (left.getType() == STRING) {
+                switch (right.getType()) {
+                    case INTEGER:
+                        if (left.getStringValue().length() < right.getIntValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case DOUBLE:
+                        if (left.getStringValue().length() < right.getDoubleValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case STRING:
+                        if (left.getStringValue().length() < right.getStringValue().length()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case TRUE:
+                        if (left.getStringValue().length() < 4) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case FALSE:
+                        if (left.getStringValue().length() < 5) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    default:
+                        Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
+                        return null;
+                }
+            } else {
+                Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
+                return null;
+            }
+        } else if (comparator.getType() == EQUAL) {
+            if (left.getType() == INTEGER) {
+                switch (right.getType()) {
+                    case INTEGER:
+                        if (left.getIntValue() == right.getIntValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case DOUBLE:
+                        if (left.getIntValue() == right.getDoubleValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case STRING:
+                        if (left.getIntValue() == right.getStringValue().length()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case TRUE:
+                        if (left.getIntValue() == 4) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case FALSE:
+                        if (left.getIntValue() == 5) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    default:
+                        Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
+                        return null;
+                }
+            } else if (left.getType() == DOUBLE) {
+                switch (right.getType()) {
+                    case INTEGER:
+                        if (left.getDoubleValue() == right.getIntValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case DOUBLE:
+                        if (left.getDoubleValue() == right.getDoubleValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case STRING:
+                        if (left.getDoubleValue() == right.getStringValue().length()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case TRUE:
+                        if (left.getDoubleValue() == 4.0) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case FALSE:
+                        if (left.getIntValue() == 5.0) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    default:
+                        Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
+                        return null;
+                }
+            } else if (left.getType() == STRING) {
+                switch (right.getType()) {
+                    case INTEGER:
+                        if (left.getStringValue().length() == right.getIntValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case DOUBLE:
+                        if (left.getStringValue().length() == right.getDoubleValue()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case STRING:
+                        if (left.getStringValue().length() == right.getStringValue().length()) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case TRUE:
+                        if (left.getStringValue().length() == 4) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    case FALSE:
+                        if (left.getStringValue().length() == 5) {
+                            return new Lexeme(TRUE, left.getLineNumber());
+                        } else {
+                            return new Lexeme(FALSE, left.getLineNumber());
+                        }
+                    default:
+                        Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
+                }
+            } else {
+                Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
+                return null;
+            }
         }
+        Speaking.error(left, "Incompatible types. Attempt to compare " + left + " to " + right);
+        return null;
     }
 
-    private Lexeme evalFunctionDeclaration() {
+    private Lexeme evalFunctionDefinition(Lexeme function, Environment environment) {
+        Lexeme id = function.getLeft();
+        if (environment.identifiers.contains(id)) {
+            Speaking.error(id, "Function " + id + " already exists.");
+            return null;
+        }
+        Lexeme closure = function.getRight();
+        environment.insert(id, closure);
+        return null;
+    }
+
+    private Lexeme evalFunctionCall(Lexeme lexeme, Environment environment) {
+        switch (lexeme.getType()) {
+            case FUNCTION:
+                return evalActualFunctionCall(lexeme, environment);
+            case ANNOUNCE:
+                if (lexeme.getLeft() != null) {
+                    System.out.println(lexeme.getRight().getStringValue());
+                } else {
+                    System.out.println(lexeme.getRight().getStringValue().toUpperCase());
+                }
+                return null;
+            case LENGTH:
+                return new Lexeme(INTEGER, lexeme.getLeft().getStringValue().length(), lexeme.getLineNumber());
+            case FUN:
+                System.out.println("https://www.boredbutton.com/");
+                return null;
+            case CUT:
+                String s = lexeme.getLeft().getStringValue();
+                int lower = lexeme.getRight().getLeft().getIntValue();
+                int upper = lexeme.getRight().getRight().getIntValue();
+                return new Lexeme(STRING, s.substring(lower, upper), lexeme.getLineNumber());
+        }
+        return null;
+    }
+
+    private Lexeme evalActualFunctionCall(Lexeme functionCall, Environment environment) {
+        Lexeme id = functionCall.getLeft();
+        int x = environment.identifiers.indexOf(id);
+        Lexeme closure = environment.identifiers.get(x);
+        ArrayList<Lexeme> argList = getList(closure.getLeft());
+        ArrayList<Lexeme> typeList = getList(closure.getRight());
+        if (argList.size() != typeList.size()) {
+            Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
+            return null;
+        }
+        for (int i = 0; i < argList.size(); i++) {
+            if (typeList.get(i).getType() == STRING_TYPE && argList.get(i).getStringValue() == null) {
+                Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
+                return null;
+            } else if (typeList.get(i).getType() == INTEGER_TYPE && argList.get(i).getStringValue() != null) {
+                Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
+                return null;
+            } else if (typeList.get(i).getType() == BOOLEAN_TYPE && (argList.get(i).getType() != TRUE || argList.get(i).getType() != FALSE)) {
+                Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
+                return null;
+            } else if (typeList.get(i).getType() == DOUBLE_TYPE && argList.get(i).getStringValue() != null) {
+                Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
+                return null;
+            }
+        }
+        Environment tempEnvironment = new Environment(environment);
+        temp
+        return eval();
 
     }
 
-    private Lexeme evalArrayDeclaration() {
-
+    private Lexeme evalWhileLoop(Lexeme whileLexeme, Environment environment) {
+        boolean pass = false;
+        if (eval(whileLexeme.getLeft(), environment).getType() == TRUE) {
+            pass = true;
+        }
+        while (pass) {
+            evalBlock(whileLexeme.getLeft(), environment);
+            if (eval(whileLexeme.getLeft(), environment).getType() == FALSE) {
+                pass = false;
+            }
+        }
+        return null;
     }
 
-    private Lexeme evalArrayAssignment() {
-
+    private Lexeme evalUntilLoop(Lexeme until, Environment environment) {
+        boolean pass = false;
+        if (eval(until.getLeft(), environment).getType() == TRUE) {
+            pass = true;
+        }
+        while (!pass) {
+            evalBlock(until.getLeft(), environment);
+            if (eval(until.getLeft(), environment).getType() == TRUE) {
+                pass = true;
+            }
+        }
+        return null;
     }
 
-    private Lexeme evalFunctionCall() {
 
+    private Lexeme evalReturn(Lexeme returnLexeme, Environment environment) {
+        return eval(returnLexeme.getLeft(), environment);
     }
 
-    private Lexeme evalWhileLoop() {
-
+    private Lexeme evalConditional(Lexeme ifLexeme, Environment environment) {
+        if (eval(ifLexeme.getRight(), environment).getType() == TRUE) {
+            return evalBlock(ifLexeme.getRight().getLeft(), environment);
+        } else if (ifLexeme.getRight().getRight() != null) {
+            return evalBlock(ifLexeme.getRight().getRight(), environment);
+        }
+        return null;
     }
 
-    private Lexeme evalUntilLoop() {
-
+    private Lexeme evalBlock(Lexeme block, Environment environment) {
+        return evalStatementList(block.getLeft(), environment);
     }
 
-    private Lexeme evalArrayCall() {
-
+    private Lexeme evalPossibleVariableCall(Lexeme id, Environment environment) {
+        if (environment.identifiers.contains(id)) {
+            int i = environment.identifiers.indexOf(id);
+            return environment.values.get(i);
+        }
+        return id;
     }
 
-    private Lexeme evalReturn() {
-
-    }
-
-    private Lexeme evalConditional() {
-
+    private ArrayList<Lexeme> getList(Lexeme list) {
+        ArrayList<Lexeme> result = new ArrayList<>();
+        if (list.getLeft() != null) {
+            result.add(list.getLeft());
+        }
+        if (list.getRight() != null) {
+            getList(list.getRight());
+        }
+        return result;
     }
 }

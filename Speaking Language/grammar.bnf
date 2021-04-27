@@ -22,9 +22,9 @@ expression ::= primary
 primary ::= literal
           | IDENTIFIER
 
-unary ::= "increase"
-        | "decrese"
-        | "not"
+unary ::= "increase" INTEGER
+        | "decrease" INTEGER
+        | "not" expression
 
 binary ::= primary binaryOperator primary
 
@@ -41,11 +41,10 @@ comparator ::= "is greater than"
              | "is equal to"
 
 functionCall ::= IDENTIFIER "(" parameterList? ")"
-               | "announce" expression
-               | "announce loudly" expression
+               | "announce" STRING
+               | "announce loudly" STRING
                | "cut" "(" IDENTIFIER "and" INTEGER "to" INTEGER ")"
-               | "length" IDENTIFIER
-               | "convert" "(" STRING ")"
+               | "length" STRING
                | "fun"
 
 parameterList ::= expression
@@ -65,26 +64,15 @@ assignment ::= variableAssignment
 
 variableAssignment ::= IDENTIFIER "has" expression
 
-arrayDeclaration ::= "my array" IDENTIFIER "is size" INTEGER "with" variableType
-
 variableDeclaration ::= "my" variableType IDENTIFIER
                       | "my" variableType IDENTIFIER  "has" expression
 
-functionDeclaration ::= "my function" IDENTIFIER "accepts" "(" typeList? ")" "and distributes" "(" typeList? ")" block
+functionDeclaration ::= "my function" IDENTIFIER "accepts" "(" typeList? ")" block
 
 typeList ::= variableType
             | variableType "and" typeList
 
-variableType ::= "word" | "words"
-            | "number" | "numbers"
-            | "fact" | "facts"
-            | "decimal" | "decimals"
-
-arrayAssignment ::= IDENTIFIER "add" expression "[" INTEGER "]"
-
-arrayCall ::= IDENTIFIER "[" expression "]"
-
-comment ::= "psst," STRING "alright?"
+variableType ::= ("word" | "words" | "number" | "numbers" | "fact" | "facts" | "decimal" | "decimals") IDENTIFIER
 
 conditional ::= "if" "(" expression ")" block
 

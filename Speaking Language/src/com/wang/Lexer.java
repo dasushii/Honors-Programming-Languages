@@ -21,7 +21,6 @@ public class Lexer {
         keywords.put("loudly", LOUDLY);
         keywords.put("cut", CUT);
         keywords.put("length", LENGTH);
-        keywords.put("convert", CONVERT);
         keywords.put("if", IF);
         keywords.put("word", STRING_TYPE);
         keywords.put("words", STRING_TYPE);
@@ -57,9 +56,6 @@ public class Lexer {
         keywords.put("to", TO);
         keywords.put("show", SHOW);
         keywords.put("array", ARRAY);
-        keywords.put("size", SIZE);
-        keywords.put("with", WITH);
-        keywords.put("add", ADD);
     }
 
     public Lexer(String source) {

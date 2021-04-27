@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="32f123c7-e462-4442-8b32-177d2eb2a94d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/grammar.bnf" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/grammar.bnf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Evaluator.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Evaluator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Lexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Speaking Language/src/com/wang/TokenType.java" beforeDir="false" afterPath="$PROJECT_DIR$/Speaking Language/src/com/wang/TokenType.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

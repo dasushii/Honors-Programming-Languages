@@ -38,11 +38,6 @@ public enum TokenType {
 
     NULL,
 
-    ARRAY,
-    SIZE,
-    WITH,
-    ADD,
-
     MY,
     FUNCTION,
     IS,
@@ -89,12 +84,9 @@ public enum TokenType {
     UNARY,
     BINARY,
     FUNCTION_CALL,
-    ARRAY_CALL,
     VARIABLE_DECLARATION,
     FUNCTION_DECLARATION,
-    ARRAY_DECLARATION,
     VARIABLE_ASSIGNMENT,
-    ARRAY_ASSIGNMENT,
     WHILE_LOOP,
     UNTIL_LOOP,
     LITERAL,
@@ -105,6 +97,9 @@ public enum TokenType {
     TYPE_LIST,
     MATH_OPERATOR,
     COMPARATOR,
+
+    //Closure
+    CLOSURE,
 
     //Glue!!!!
     GLUE,
