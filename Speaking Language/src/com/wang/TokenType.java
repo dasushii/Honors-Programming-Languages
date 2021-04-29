@@ -57,8 +57,6 @@ public enum TokenType {
     TO,
     THAN,
 
-    COMMENT,
-
     //keywords
     ANNOUNCE,
     LOUDLY,
@@ -103,4 +101,8 @@ public enum TokenType {
 
     //Glue!!!!
     GLUE,
+
+    //Comments
+    COMMENT,
+    BTW,
 }

@@ -4,45 +4,56 @@ This project was created by Eric Wang as part of the Honors Programming Language
 
 ## Introduction
 
-The speaking language is primarily designed to more resemble normal speaking compared to traditional coding languages
-such as Java
+The speaking language is primarily designed to resemble normal speaking compared to traditional coding languages such as
+Java. Many of the rules in Speaking are self-explanatory and inherently easy to remember.
 
 ## The Basics
 
 ### General Syntax
 
-Similar to the semicolon `;` used in Java, Speaking uses the bang `!`
-Braces `{ }` used in Java will also be used in Speaking.
+Similar to the semicolon `;` used in Java, Speaking uses the bang `!` to close off certain statements. Braces `{ }` used
+in Java will also be used in Speaking.
 
-Additionally, "and" will be used instead of commas to separate elements.
+**Important: Please read carefully about usage of the bang `!`, only certain statements and situations require the
+bang `!`**
 
-To comment, begin with "btw, ". For multiple lines of comments, begin with "psst, " and end with "alright?"
+`show` is the Speaking equivalent of `return` in Java. Every `show` statement must be followed by a bang `!`.
+
+`nothing` is the Speaking equivalent of `null` in Java.
+
+Additionally, `and` will be used instead of commas to separate elements.
+
+To comment, begin and end with `btw`
+
 Example:
 
 ```
-btw, I am commenting right now.
+btw I am commenting right now btw
 
-psst, 
-This is another way to comment.
-alright?
 ```
 
 ### Variables
 
 Speaking supports integers, doubles, booleans, and Strings, but they are called "numbers", "decimals", "facts", and "
-Words", respectively.\
-
-When using "facts" (booleans), "true" and "false" are replaced with "yep" and "nope"
+Words", respectively.
 
 "numbers", "decimals", "facts", and "Words" can be singular or plural, depending on which fits the context. Both work.
 
-When declaring variables, use "The" + [variable type] + [variable name]. To set the variable, simply use "is"
-+ [definition]
+When using "facts" (booleans), "true" and "false" are replaced with "yep" and "nope"
+
+When declaring variables, use "my" + [variable type] + [variable name] + "!"
+
+To initialize a variable, simply use "my" + [variable type] + [variable name] + "has" [definition] "!"
+
+To assign a value to a previously declared variable, use [variable name] + "has" [definition] "!"
+
+Definitions are not limited to primaries, they can also be expression. Just make sure that the definition matches the
+variable type!
 
 Example:
 
 ```
-the Word testVariable!
+my word testVariable!
 testVariable is "Hello"!
 
 the Word testVariable2 is "Hello"!
@@ -50,66 +61,93 @@ the Word testVariable2 is "Hello"!
 
 To call a variable, simply use the variable name:
 
-`announce testVariable!`
+`show testVariable!`
 
 ### Functions
 
-In general, functions follow the form "My function" + [function name] + "accepts" + ([function parameter(s)]) + "and
-distributes" + [return type(s)]
+#### Defining Functions
 
-To `return`, simply type `show`
+Defining a function follows the form "my function" + [function name] + "accepts" + "(" + [function parameter(s)] + ")"
++ [block]
+
+For sake of simplicity, return types of functions in Speaking do not need to be specified.
+
+##### How to Enumerate Function Parameters
+
+Function parameters work a bit differently than Java conventions.
+
+Every parameter uses the standard [parameterType] + [IDENTIFIER], such as `number inputInteger` or `word inputString`
+
+To have more than one parameter, add `and` after each subsequent parameter.
 
 Example:
 
 ```
-My function testFunction accepts (number inputInteger) and distributes (numbers){
+my function exampleFunction accepts (fact x and fact y and decimal z){
+
+}
+```
+
+*This is very important:* Even if your desired function takes in nothing, you still must include "nothing" + (a random
+identifier) as a parameter
+
+The "nothing" + (a random identifier) won't ever be used or evaluated in any meaningful way, and only serves as a
+placeholder.
+
+Here's an example of a function that doesn't take in anything:
+
+```
+my function functionThatDoesntTakeInAnything accepts (nothing x){
+
+}
+```
+
+Or another example:
+
+```
+my function functionThatDoesntTakeInAnything accepts (nothing literallyAnyIdentiferName){
+
+}
+```
+
+Function Definition Example:
+
+```
+my function testFunction accepts (number inputInteger){
     show inputInteger times 2!
 } 
 ```
 
 The console would return `inputInteger * 2`
 
-#### Functions with no return type
+#### Calling Functions
 
 For functions that don't return anything (Java's `void`), use `nothing`. Similarly, for functions that don't require any
-input, also use `nothing`. Example:
+input, also use `nothing`.
+
+Adding on to the above example, this is what defining a function would ultimately look like:
 
 ```
-My function testFunction2 accepts (nothing) and distributes (nothing){
-    announce "This function doesn't return anything!"!
-} 
-```
-
-The console would print `This function doesn't return anything!`
-
-#### Functions with multiple return types
-
-Although functions can only return one element at a time, they can have multiple return types (**subject to change if
-not possible**)
-
-Example:
+my function testFunction accepts (number inputInteger){
+    show inputInteger times 2!
+}
+my number x has 2!
 
 ```
-My function testFunction accepts (nothing) and distributes (numbers and Words){
-    show 5 times 5!
-} 
-```
 
-In the above example, Speaking automatically detects that the return type is a `number` and returns a `number`.
-
-The console would return `25`
+The console would return `4`.
 
 ### Control Flow
 
 The Speaking Language mainly uses 2 loops: `while` and`until`.
 `while` works like the while loop in Java, and `until` runs until the conditions are met.
 
-Use [loop type] + [conditions].
+Use [loop type] + "(" + [conditions] + ")" + [block]
 
 Example of while loop:
 
 ```
-My number x is 5!
+my number x is 5!
 while x is greater than 2 {
     announce x!
     x is x minus 1!
@@ -123,12 +161,24 @@ Example of until loop:
 ```
 number x is 5!
 until x is equal to 2 {
-    announce x!
+    show x!
     x is x minus 1!
 }
 ```
 
 The console would print `543`
+
+### The Block
+
+So far, the block has been shown in a few examples. But what is it?
+
+It's very simple. A block is a group of statements wrapped up by a pair of braces. So, it looks like this:
+
+"{" + [statementList] + "}"
+
+Just like in Java, blocks in Speaking represent the portion of code that should be executed when called for.
+
+In this language, blocks are used after function definitions and while/until loops.
 
 ### Operators
 
@@ -139,16 +189,22 @@ Operators in Speaking serve the same purpose as Java's operators, but with diffe
 |`+`|`plus`|
 |`-`|`minus`|
 |`*`|`times`|
-|`/`|`divided by`|
-|`%`|`modulus`|
-|++|`increase` or `increased`|
-|--| `decrease` or `decreased`|
+|`/`|`over`|
+|++|`increase`|
+|--| `decrease`|
 
-Note that *Speaking does not have Java equivalents of `+=`, `-=`, and etc*
+Note that *Speaking does not have Java equivalents of `+=`, `-=`, and etc.*
 
 #### Operations between different variable types
 
-This will be further explored later on.
+As a general rule of thumb, when doing binary operations on two elements, Speaking will almost always return something
+with the variable type of the left element.
+
+The only exception to this rule is the boolean. Placing booleans to the left of an operation does not guarantee that a
+boolean will be returned.
+
+Here is the link to the Google Spreadsheet that covers all cross-type
+operations: https://docs.google.com/spreadsheets/d/1t3mERXUX27_Jo9dQh8x9fen9fFuNX5TnvXoyhh5_0qk/edit#gid=756640360
 
 ### Comparators
 
@@ -159,27 +215,16 @@ Comparators in Speaking are also closely similar to Java comparators:
 |`>`|`is greater than`|
 |`<`|`is less than`|
 |`==`|`is equal to`|
-|`>=`|`is greater than or equal to`|
-|`<=`|`is less than or equal to`|
-|`!>`|`is not greater than`|
-|`!<`|`is not less than`|
-|`!>=`|`is not greater than or equal to`|
-|`!<=`|`is not less than or equal to`|
-|`!=`|`is not equal to`|
-
-### Collections
-
-Speaking Language mainly uses ArrayLists as the way to store elements
+|`!`|`not`|
 
 ### Built-in functions
 
-The table below lists some additional useful functions. More functions will be introduced over time when necessary.
+The table below lists some additional built-in functions.
 
 | Function | Description |
 |-----|-----|
-|`announce`| Equivalent to Java's `System.out.print`|
-|`announce loudly`|Equivalent to Java's `System.out.println`|
-|`cut my word [Word] from [lower index] to [upper index]`|Equivalent to Java's `String.substring()`|
-|`word length of (Word)`|Equivalent to Java's `String.length()`|
-|`convert()`|Takes in Java code and turns returns it in Speaking language|
+|`announce STRING`| Equivalent to Java's `System.out.print`|
+|`announce loudly STRING`|Equivalent to Java's `System.out.println`|
+|`cut(STRING and LOWER_INDEX to UPPER_INDEX)`|Equivalent to Java's `String.substring()`|
+|`length(STRING)!`|Equivalent to Java's `String.length()`|
 |`I want to have fun`|Returns link https://www.boredbutton.com/|

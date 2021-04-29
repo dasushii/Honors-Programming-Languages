@@ -55,7 +55,7 @@ public class Lexer {
         keywords.put("than", THAN);
         keywords.put("to", TO);
         keywords.put("show", SHOW);
-        keywords.put("array", ARRAY);
+        keywords.put("btw", BTW);
     }
 
     public Lexer(String source) {

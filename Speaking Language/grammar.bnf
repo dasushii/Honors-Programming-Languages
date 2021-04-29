@@ -11,6 +11,7 @@ statement ::= expression
             | conditional
             | block
             | optionalReturn
+            | comment
 
 expression ::= primary
             | unary
@@ -88,4 +89,5 @@ block ::= "{" statementList? "}"
 optionalReturn ::= "show" expression "!"
                 | "show" "!"
 
+comment ::= "btw" STRING "btw"
 

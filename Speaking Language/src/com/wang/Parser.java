@@ -34,6 +34,7 @@ public class Parser {
             advance();
             return temp;
         } else {
+            System.out.print(" ");
             Speaking.error(currentLexeme, "Expected " + expected + " but found " + currentLexeme);
             return null;
         }
@@ -63,7 +64,6 @@ public class Parser {
         if (statementListPending()) {
             Lexeme statementList2 = statementList();
             statementList.setRight(statementList2);
-            System.out.println(statementList.getRight());
         }
         return statementList;
     }
@@ -72,6 +72,7 @@ public class Parser {
         if (debug) System.out.println("-- statement --");
         Lexeme statement = new Lexeme(STATEMENT, currentLexeme.getLineNumber());
         if (declarationPending()) return declaration();
+        else if (commentPending()) return comment();
         else if (assignmentPending()) return assignment();
         else if (loopPending()) return loop();
         else if (conditionalPending()) return conditional();
@@ -95,7 +96,7 @@ public class Parser {
         else {
             Speaking.error(currentLexeme, "Expected " + "expression" + " but found " + currentLexeme);
         }
-        return expression;
+        return null;
     }
 
     private Lexeme declaration() {
@@ -147,7 +148,8 @@ public class Parser {
         Lexeme block = new Lexeme(BLOCK, currentLexeme.getLineNumber());
         consume(OPEN_BRACE);
         if (statementListPending()) {
-            block.setLeft(statementList());
+            Lexeme statementList = statementList();
+            block.setLeft(statementList);
         }
         consume(CLOSE_BRACE);
         return block;
@@ -205,9 +207,8 @@ public class Parser {
             Lexeme id = consume(IDENTIFIER);
             functionCall.setLeft(id);
             consume(OPEN_PAREN);
-            if (parameterListPending()) {
-                functionCall.setRight(parameterList());
-            }
+            Lexeme parameterList = parameterList();
+            functionCall.setRight(parameterList);
             consume(CLOSE_PAREN);
             consume(BANG);
         } else if (check(ANNOUNCE)) {
@@ -367,7 +368,8 @@ public class Parser {
     private Lexeme parameterList() {
         if (debug) System.out.println("-- parameterList --");
         Lexeme parameterList = new Lexeme(PARAMETER_LIST, currentLexeme.getLineNumber());
-        parameterList.setLeft(expression());
+        Lexeme expression = expression();
+        parameterList.setLeft(expression);
         if (check(AND)) {
             consume(AND);
             Lexeme parameterList2 = parameterList();
@@ -395,8 +397,8 @@ public class Parser {
         Lexeme typeList = new Lexeme(TYPE_LIST, currentLexeme.getLineNumber());
         Lexeme variableType = variableType();
         Lexeme id = consume(IDENTIFIER);
-        variableType.setLeft(id);
-        typeList.setLeft(variableType);
+        id.setLeft(variableType);
+        typeList.setLeft(id);
         if (check(AND)) {
             consume(AND);
             Lexeme typeList2 = typeList();
@@ -442,13 +444,29 @@ public class Parser {
         return comparator;
     }
 
+    private Lexeme comment() {
+        if (debug) System.out.println("-- comment --");
+        Lexeme comment = new Lexeme(COMMENT, currentLexeme.getLineNumber());
+        consume(BTW);
+        while (!check(BTW)) {
+            if (check(EOF)) {
+                Speaking.error(currentLexeme, "Expected BTW but found " + currentLexeme);
+                return comment;
+            } else {
+                advance();
+            }
+        }
+        consume(BTW);
+        return comment;
+    }
+
     //Pending Methods
     private boolean statementListPending() {
         return statementPending();
     }
 
     private boolean statementPending() {
-        return expressionPending() || declarationPending() || assignmentPending() || loopPending() || conditionalPending() || blockPending() || optionalReturnPending();
+        return expressionPending() || declarationPending() || assignmentPending() || loopPending() || conditionalPending() || blockPending() || optionalReturnPending() || commentPending();
     }
 
     private boolean expressionPending() {
@@ -553,5 +571,9 @@ public class Parser {
 
     private boolean variableTypePending() {
         return check(INTEGER_TYPE) || check(STRING_TYPE) || check(DOUBLE_TYPE) || check(BOOLEAN_TYPE) || check(NULL);
+    }
+
+    private boolean commentPending() {
+        return check(BTW);
     }
 }

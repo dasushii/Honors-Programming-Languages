@@ -10,13 +10,20 @@ public class Evaluator {
         if (tree == null) return null;
         switch (tree.getType()) {
             case PROGRAM:
+                if (tree.getLeft() != null) {
+                    return eval(tree.getLeft(), environment);
+                }
+                return null;
+            case COMMENT:
             case STATEMENT_LIST:
-                return evalStatementList(tree.getLeft(), environment);
+                return evalStatementList(tree, environment);
             case INTEGER:
             case DOUBLE:
             case STRING:
             case TRUE:
             case FALSE:
+            case NULL:
+                return tree;
             case IDENTIFIER:
                 return evalPossibleVariableCall(tree, environment);
             case EQUAL:
@@ -37,6 +44,10 @@ public class Evaluator {
                 return evalVariableDeclaration(tree, environment);
             case HAS:
                 return evalVariableAssignment(tree, environment);
+            case ANNOUNCE:
+            case CUT:
+            case LENGTH:
+            case FUN:
             case FUNCTION_CALL:
                 return evalFunctionCall(tree, environment);
             case WHILE:
@@ -47,17 +58,28 @@ public class Evaluator {
                 return evalReturn(tree, environment);
             case IF:
                 return evalConditional(tree, environment);
+            case BLOCK:
+                return evalBlock(tree, environment);
+            case NOT:
+                return evalNot(tree, environment);
             default:
                 return null;
         }
     }
 
     private Lexeme evalStatementList(Lexeme tree, Environment environment) {
-        if (tree.getRight() != null) {
-            eval(tree.getLeft(), environment);
-            return evalStatementList(tree.getRight(), environment);
-        } else {
+        if (tree.getRight() == null) {
+            if (tree.getLeft() == null || tree.getLeft().getType() == NULL) {
+                return null;
+            }
             return eval(tree.getLeft(), environment);
+        } else {
+            if (tree.getLeft().getType() == NULL) {
+                return evalStatementList(tree.getRight(), environment);
+            } else {
+                eval(tree.getLeft(), environment);
+                return evalStatementList(tree.getRight(), environment);
+            }
         }
     }
 
@@ -407,7 +429,19 @@ public class Evaluator {
             return null;
         }
         if (variableType.getRight() != null) {
-            environment.insert(id, variableType.getRight());
+            if (variableType.getType() == STRING_TYPE && eval(variableType.getRight(), environment).getType() != STRING) {
+                Speaking.error(id, "Variable " + id.getStringValue() + " is not properly defined with the given type " + variableType);
+            } else if (variableType.getType() == INTEGER_TYPE && eval(variableType.getRight(), environment).getType() != INTEGER) {
+                Speaking.error(id, "Variable " + id.getStringValue() + " is not properly defined with the given type " + variableType);
+            } else if (variableType.getType() == DOUBLE_TYPE && eval(variableType.getRight(), environment).getType() != DOUBLE) {
+                Speaking.error(id, "Variable " + id.getStringValue() + " is not properly defined with the given type " + variableType);
+            } else if (variableType.getType() == BOOLEAN_TYPE && eval(variableType.getRight(), environment).getType() != TRUE) {
+                Speaking.error(id, "Variable " + id.getStringValue() + " is not properly defined with the given type " + variableType);
+            } else if (variableType.getType() == BOOLEAN_TYPE && eval(variableType.getRight(), environment).getType() != FALSE) {
+                Speaking.error(id, "Variable " + id.getStringValue() + " is not properly defined with the given type " + variableType);
+            } else {
+                environment.insert(id, eval(variableType.getRight(), environment));
+            }
         } else {
             environment.insert(id, null);
         }
@@ -419,13 +453,17 @@ public class Evaluator {
         Lexeme expression = has.getRight();
         boolean replaced = false;
         for (int i = 0; i < environment.identifiers.size(); i++) {
-            if (environment.identifiers.get(i) == id) {
-                environment.identifiers.set(i, expression);
-                replaced = true;
+            if (environment.identifiers.get(i).getStringValue().equals(id.getStringValue())) {
+                if (environment.values.get(i).getType() != eval(expression, environment).getType()) {
+                    Speaking.error(id, "Variable " + id.getStringValue() + " is not properly assigned with the given type " + environment.values.get(i).getType());
+                } else {
+                    environment.identifiers.set(i, eval(expression, environment));
+                    replaced = true;
+                }
             }
         }
         if (!replaced) {
-            Speaking.error(id, "Variable " + id + " is not properly initialized");
+            Speaking.error(id, "Variable " + id + " is not properly declared or initialized");
         }
         return null;
     }
@@ -786,13 +824,13 @@ public class Evaluator {
 
     private Lexeme evalFunctionCall(Lexeme lexeme, Environment environment) {
         switch (lexeme.getType()) {
-            case FUNCTION:
+            case FUNCTION_CALL:
                 return evalActualFunctionCall(lexeme, environment);
             case ANNOUNCE:
                 if (lexeme.getLeft() != null) {
-                    System.out.println(lexeme.getRight().getStringValue());
-                } else {
                     System.out.println(lexeme.getRight().getStringValue().toUpperCase());
+                } else {
+                    System.out.println(lexeme.getRight().getStringValue());
                 }
                 return null;
             case LENGTH:
@@ -811,33 +849,56 @@ public class Evaluator {
 
     private Lexeme evalActualFunctionCall(Lexeme functionCall, Environment environment) {
         Lexeme id = functionCall.getLeft();
-        int x = environment.identifiers.indexOf(id);
-        Lexeme closure = environment.identifiers.get(x);
-        ArrayList<Lexeme> argList = getList(closure.getLeft());
-        ArrayList<Lexeme> typeList = getList(closure.getRight());
+        int index = -1;
+        for (int i = 0; i < environment.identifiers.size(); i++) {
+            if (environment.identifiers.get(i).getStringValue().equals(id.getStringValue())) {
+                index = i;
+            }
+        }
+        if (index == -1) {
+            Speaking.error(functionCall, "Invalid function call. Function " + id.getStringValue() + " does not exist.");
+            return null;
+        }
+        Lexeme closure = environment.values.get(index);
+        ArrayList<Lexeme> argList = getList(functionCall.getRight());
+        ArrayList<Lexeme> typeList = getList(closure.getLeft());
         if (argList.size() != typeList.size()) {
             Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
             return null;
         }
         for (int i = 0; i < argList.size(); i++) {
-            if (typeList.get(i).getType() == STRING_TYPE && argList.get(i).getStringValue() == null) {
+            if (typeList.get(i).getLeft().getType() == STRING_TYPE && eval(argList.get(i), environment).getType() != STRING) {
                 Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
                 return null;
-            } else if (typeList.get(i).getType() == INTEGER_TYPE && argList.get(i).getStringValue() != null) {
+            } else if (typeList.get(i).getLeft().getType() == INTEGER_TYPE && eval(argList.get(i), environment).getType() != INTEGER) {
                 Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
                 return null;
-            } else if (typeList.get(i).getType() == BOOLEAN_TYPE && (argList.get(i).getType() != TRUE || argList.get(i).getType() != FALSE)) {
+            } else if (typeList.get(i).getLeft().getType() == BOOLEAN_TYPE && eval(argList.get(i), environment).getType() != TRUE) {
+                if (eval(argList.get(i), environment).getType() != FALSE) {
+                    Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
+                    return null;
+                }
+            } else if (typeList.get(i).getLeft().getType() == DOUBLE_TYPE && eval(argList.get(i), environment).getType() != DOUBLE) {
                 Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
                 return null;
-            } else if (typeList.get(i).getType() == DOUBLE_TYPE && argList.get(i).getStringValue() != null) {
+            } else if (typeList.get(i).getLeft().getType() == NULL && eval(argList.get(i), environment).getType() != NULL) {
                 Speaking.error(functionCall, "Invalid function call. Arguments do not match defined parameters.");
                 return null;
             }
         }
         Environment tempEnvironment = new Environment(environment);
-        temp
-        return eval();
-
+        for (int i = 0; i < argList.size(); i++) {
+            tempEnvironment.insert(typeList.get(i), eval(argList.get(i), environment));
+        }
+        ArrayList<String> identifierList = getStringList(tempEnvironment.identifiers);
+        ArrayList<String> parentIdentifierList = getStringList(environment.identifiers);
+        for (int i = 0; i < parentIdentifierList.size(); i++) {
+            if (!identifierList.contains(parentIdentifierList.get(i))) {
+                tempEnvironment.insert(environment.identifiers.get(i), environment.values.get(i));
+            }
+        }
+        Lexeme block = closure.getRight();
+        return eval(block, tempEnvironment);
     }
 
     private Lexeme evalWhileLoop(Lexeme whileLexeme, Environment environment) {
@@ -887,9 +948,10 @@ public class Evaluator {
     }
 
     private Lexeme evalPossibleVariableCall(Lexeme id, Environment environment) {
-        if (environment.identifiers.contains(id)) {
-            int i = environment.identifiers.indexOf(id);
-            return environment.values.get(i);
+        for (int i = 0; i < environment.identifiers.size(); i++) {
+            if (environment.identifiers.get(i).getStringValue().equals(id.getStringValue())) {
+                return environment.values.get(i);
+            }
         }
         return id;
     }
@@ -903,5 +965,24 @@ public class Evaluator {
             getList(list.getRight());
         }
         return result;
+    }
+
+    private ArrayList<String> getStringList(ArrayList<Lexeme> identifierList) {
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < identifierList.size(); i++) {
+            result.add(identifierList.get(i).getStringValue());
+        }
+        return result;
+    }
+
+    private Lexeme evalNot(Lexeme not, Environment environment) {
+        if (eval(not.getLeft(), environment).getType() == TRUE) {
+            return new Lexeme(FALSE, not.getLineNumber());
+        } else if (eval(not.getLeft(), environment).getType() == FALSE) {
+            return new Lexeme(TRUE, not.getLineNumber());
+        } else {
+            Speaking.error(not, "Cannot use unary NOT on non-Boolean expressions");
+            return null;
+        }
     }
 }
